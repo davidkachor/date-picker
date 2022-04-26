@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import Modal from './components/UI/Modal'
+import Calendar from "./components/Calendar/Calendar";
 
 function App() {
 	const [isModalOpened, setIsModalOpened] = useState(false)
@@ -9,7 +9,7 @@ function App() {
 	return (
 		<React.Fragment>
 			<button onClick={clickHandler} className='click-me-btn'>click!</button>
-			{isModalOpened && <Modal onClose={clickHandler}/>}
+			{isModalOpened && <Calendar onClose={clickHandler}/>}
 		</React.Fragment>
 	)
 }
