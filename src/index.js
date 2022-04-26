@@ -1,12 +1,15 @@
-import React from 'react';
+import React, {} from 'react';
 import ReactDOM from 'react-dom/client';
+import './index.scss'
 import App from './App';
+import {ThemeCtxProvider} from "./context/theme-context";
+
 
 const root = ReactDOM.createRoot(document.getElementById('react-root'));
 root.render(
-  <React.StrictMode>
+  <ThemeCtxProvider>
     <App />
-  </React.StrictMode>
+  </ThemeCtxProvider>
 );
 
 // If you want to start measuring performance in your app, pass a function
