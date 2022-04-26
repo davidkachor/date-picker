@@ -2,7 +2,8 @@ import Modal from '../UI/Modal'
 import Select from '../UI/Select'
 import YearSwitcher from './YearSwitcher/YearSwitcher'
 import React, { useEffect, useState } from 'react'
-import {monthsList, createArrayOfDays} from '../../helpers/calendar-data'
+import { monthsList, createArrayOfDays } from '../../helpers/calendar-data'
+import CalendarDateSection from './CalendarDateSection/CalendarDateSection'
 
 function Calendar(props) {
 	const currentDate = new Date()
@@ -12,7 +13,9 @@ function Calendar(props) {
 	const [month, setMonth] = useState(currentDate.getMonth() + 1)
 	const [year, setYear] = useState(currentDate.getFullYear())
 	const [daysArr, setDaysArr] = useState(
-		createArrayOfDays(`${currentDate.getFullYear()}-${currentDate.getMonth() + 1}`)
+		createArrayOfDays(
+			`${currentDate.getFullYear()}-${currentDate.getMonth() + 1}`
+		)
 	)
 
 	useEffect(() => {
@@ -60,19 +63,18 @@ function Calendar(props) {
 					{daysArr.map((e, i) => {
 						if (e) {
 							return (
-								<div
+								<CalendarDateSection
 									key={i}
 									className={
-										'calendar-date ' +
-										(e === currentDate.getDate() &&
+										e === currentDate.getDate() &&
 										month === new Date().getMonth() + 1 &&
 										year === new Date().getFullYear()
 											? 'calendar-date__today'
-											: '')
+											: ''
 									}
 								>
 									{e}
-								</div>
+								</CalendarDateSection>
 							)
 						} else {
 							return (

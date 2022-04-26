@@ -1,15 +1,11 @@
-import React, {useState} from "react";
-import Calendar from "./components/Calendar/Calendar";
+import React from "react";
+import CalendarInput from "./components/UI/CalendarInput";
 
 function App() {
-	const [isModalOpened, setIsModalOpened] = useState(false)
-
-	const clickHandler = () => setIsModalOpened(prev => !prev)
 
 	return (
 		<React.Fragment>
-			<button onClick={clickHandler} className='click-me-btn'>click!</button>
-			{isModalOpened && <Calendar onClose={clickHandler}/>}
+			<CalendarInput/>
 		</React.Fragment>
 	)
 }
