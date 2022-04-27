@@ -3,14 +3,21 @@ import Calendar from '../Calendar/Calendar'
 
 function CalendarInput() {
 	const [calendarIsOpen, setCalendarIsOpen] = useState(false)
+	const [enteredValue, setEnteredValue] = useState('')
 
 	const clickHandler = () => setCalendarIsOpen(prev => !prev)
+	const selectHandler = value => setEnteredValue(value)
 
 	return (
 		<React.Fragment>
-			<label className='input-calendar'>
-				<input  type="text" disabled={true} />
-				<button className='input-calendar-btn' onClick={clickHandler}>
+			<label className="input-calendar">
+				<input
+					value={enteredValue}
+					placeholder={'dd.mm.yyyy'}
+					type="text"
+					disabled={true}
+				/>
+				<button className="input-calendar-btn" onClick={clickHandler}>
 					<svg
 						xmlns="http://www.w3.org/2000/svg"
 						width="16"
@@ -23,7 +30,7 @@ function CalendarInput() {
 					</svg>
 				</button>
 			</label>
-			{calendarIsOpen && <Calendar onClose={clickHandler} />}
+			{calendarIsOpen && <Calendar onSelect={selectHandler} onClose={clickHandler} />}
 		</React.Fragment>
 	)
 }

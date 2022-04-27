@@ -1,19 +1,19 @@
 import React, { useState, useEffect } from 'react'
 
 const ThemeContext = React.createContext({
-	theme: 'light',
+	theme: 'Light',
 	onChangeThemeToLight: () => {},
 	onChangeThemeToDark: () => {},
 })
 
 export const ThemeCtxProvider = props => {
-	const [theme, setTheme] = useState('light')
+	const [theme, setTheme] = useState('Light')
 
 	useEffect(() => {
 		const settledTheme = localStorage.getItem('THEME_OF_INTERFACE')
 		if (settledTheme) {
 			setTheme(settledTheme)
-		} else setTheme('light')
+		} else setTheme('Light')
 	}, [])
 
 	useEffect(() => {
@@ -21,10 +21,10 @@ export const ThemeCtxProvider = props => {
 	}, [theme])
 
 	const setLightTheme = () => {
-		setTheme('light')
+		setTheme('Light')
 	}
 	const setDarkTheme = () => {
-		setTheme('dark')
+		setTheme('Dark')
 	}
 
 	return (
