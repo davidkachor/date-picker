@@ -1,15 +1,20 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import {useSelector, useDispatch} from "react-redux";
+import {setDark, setLight} from "../../store/themeSlice";
+
 import Modal from '../UI/Modal'
 import Select from '../UI/Select'
 import YearSwitcher from './YearSwitcher/YearSwitcher'
-import { monthsList, createArrayOfDays } from '../../helpers/calendar-data'
-import CalendarDateSection from './CalendarDateSection/CalendarDateSection'
 import { Switch, FormControlLabel } from '@mui/material'
-import ThemeContext from '../../context/theme-context'
+import CalendarDateSection from './CalendarDateSection/CalendarDateSection'
+
+import { monthsList, createArrayOfDays } from '../../helpers/calendar-data'
 
 function Calendar(props) {
+	const theme = useSelector(state => state.theme)
+	const themeDispatch = useDispatch()
+
 	const currentDate = new Date()
-	const themeCtx = useContext(ThemeContext)
 
 	const [daysArr, setDaysArr] = useState(
 		createArrayOfDays(
@@ -60,9 +65,9 @@ function Calendar(props) {
 	}
 
 	const changeThemeHandler = () => {
-		if (themeCtx.theme === 'Light') {
-			themeCtx.onChangeThemeToDark()
-		} else themeCtx.onChangeThemeToLight()
+		if (theme === 'Light') {
+			themeDispatch(setDark())
+		} else themeDispatch(setLight())
 	}
 
 	const clickDayHandler = type => {
@@ -138,8 +143,8 @@ function Calendar(props) {
 					})}
 				</div>
 				<FormControlLabel
-					control={<Switch onChange={changeThemeHandler} />}
-					label={themeCtx.theme + 'Mode'}
+					control={<Switch onChange={changeThemeHandler} checked={theme === 'Dark'}/>}
+					label={theme + ' Mode'}
 					labelPlacement={'start'}
 				/>
 			</div>
