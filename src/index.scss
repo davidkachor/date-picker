@@ -53,6 +53,19 @@ body {
 	display: flex;
 	flex-direction: column;
 	padding: 30px;
+	animation: calendar-appear .3s ease-in-out;
+}
+
+@keyframes calendar-appear {
+	from {
+		opacity: 0;
+		transform: translateY(3rem);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
 }
 
 .calendar_switch-data {
