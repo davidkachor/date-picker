@@ -1,6 +1,6 @@
 function Select(props) {
 	const changeHandler = event => {
-		props.onChange(+event.target.value)
+		props.onChange(+event.target.value < 10 ? '0' + event.target.value : event.target.value)
 	}
 
 	return (

@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, {useCallback, useEffect, useState} from 'react'
 import {useSelector, useDispatch} from "react-redux";
 import {setDark, setLight} from "../../store/themeSlice";
+import {DateTime, Info} from "luxon/build/es6/luxon";
 
 import Modal from '../UI/Modal'
 import Select from '../UI/Select'
@@ -8,46 +9,41 @@ import YearSwitcher from './YearSwitcher/YearSwitcher'
 import { Switch, FormControlLabel } from '@mui/material'
 import CalendarDateSection from './CalendarDateSection/CalendarDateSection'
 
-import { monthsList, createArrayOfDays } from '../../helpers/calendar-data'
+import createArrayOfDays from '../../helpers/create-array-of-days'
 
 function Calendar(props) {
 	const theme = useSelector(state => state.theme)
 	const themeDispatch = useDispatch()
 
-	const currentDate = new Date()
+	const currentDate = DateTime.now()
+	const [selectedMonth, setSelectedMonth] = useState(currentDate.month < 10 ? '0' + currentDate.month : '' + currentDate.month)
+	const [selectedYear, setYear] = useState(currentDate.year)
+	const [selectedDays, setSelectedDays] = useState([])
 
 	const [daysArr, setDaysArr] = useState(
 		createArrayOfDays(
-			`${currentDate.getFullYear()}-${currentDate.getMonth() + 1}`
+			`${selectedYear}-${selectedMonth}`
 		)
 	)
 
-	const [selectedMonth, setSelectedMonth] = useState(currentDate.getMonth() + 1)
-	const [selectedYear, setYear] = useState(currentDate.getFullYear())
-	const [selectedDay, setSelectedDay] = useState([])
-
 	useEffect(() => {
-		if (selectedDay.length > 0) {
+		if (selectedDays.length > 0) {
 			let outputValue = `${
-				+selectedDay[0] < 10 ? '0' + selectedDay[0] : selectedDay[0]
-			}.${
-				+selectedMonth < 10 ? '0' + selectedMonth : selectedMonth
-			}.${selectedYear}`
+				+selectedDays[0] < 10 ? '0' + selectedDays[0] : selectedDays[0]
+			}.${selectedMonth}.${selectedYear}`
 
-			if (selectedDay.length === 2) {
+			if (selectedDays.length === 2) {
 				outputValue += `-${
-					+selectedDay[1] < 10 ? '0' + selectedDay[1] : selectedDay[1]
-				}.${
-					+selectedMonth < 10 ? '0' + selectedMonth : selectedMonth
-				}.${selectedYear}`
+					+selectedDays[1] < 10 ? '0' + selectedDays[1] : selectedDays[1]
+				}.${selectedMonth}.${selectedYear}`
 			}
 			props.onSelect(outputValue)
 		} else props.onSelect('')
-	}, [selectedDay])
+	}, [props, selectedDays, selectedMonth, selectedYear])
 
 	useEffect(() => {
 		setDaysArr(createArrayOfDays(`${selectedYear}-${selectedMonth}`))
-		setSelectedDay([])
+		setSelectedDays([])
 	}, [selectedYear, selectedMonth])
 
 	const changeMonthHandler = month => {
@@ -70,16 +66,16 @@ function Calendar(props) {
 		} else themeDispatch(setLight())
 	}
 
-	const clickDayHandler = type => {
+	const clickDayHandler = useCallback(type => {
 		if (type === 'add') {
 			return day =>
-				setSelectedDay(prev =>
+				setSelectedDays(prev =>
 					prev.length < 2 ? [...prev, day].sort((a, b) => a - b) : [day]
 				)
 		} else if (type === 'remove') {
-			return day => setSelectedDay(prev => prev.filter(e => e !== day))
+			return day => setSelectedDays(prev => prev.filter(e => e !== day))
 		}
-	}
+	}, [])
 
 	return (
 		<Modal onClose={props.onClose}>
@@ -88,8 +84,8 @@ function Calendar(props) {
 					<Select
 						onChange={changeMonthHandler}
 						className="month-switcher"
-						optionList={monthsList}
-						defaultOption={selectedMonth}
+						optionList={Info.months('long', {locale: 'eng'})}
+						defaultOption={+selectedMonth}
 					/>
 					<YearSwitcher
 						onClick={changeYearHandler}
@@ -97,34 +93,19 @@ function Calendar(props) {
 					/>
 				</div>
 				<div className="calendar-container">
-					<div className="calendar-day">Sun</div>
-					<div className="calendar-day">Mon</div>
-					<div className="calendar-day">Tue</div>
-					<div className="calendar-day">Wed</div>
-					<div className="calendar-day">Thu</div>
-					<div className="calendar-day">Fri</div>
-					<div className="calendar-day">Sat</div>
+					{Info.weekdays('short', {locale: 'en'}).map((e, i) => (
+						<div key={i} className="calendar-day">{e}</div>
+					))}
+
 					{daysArr.map((e, i) => {
 						if (e) {
 							return (
 								<CalendarDateSection
-									selectingPosition={
-										selectedDay.length === 1 && selectedDay.includes(e)
-											? 'SINGLE_SELECTED'
-											: selectedDay.length === 2 && e === selectedDay[0]
-											? 'SELECTED_ROW_START'
-											: selectedDay.length === 2 && e === selectedDay[1]
-											? 'SELECTED_ROW_END'
-											: selectedDay.length === 2 &&
-											  e > selectedDay[0] &&
-											  e < selectedDay[1]
-											? 'SELECTED_ROW_MIDDLE'
-											: 'IS_NOT_SELECTED'
-									}
+									selectedDays={selectedDays}
 									isToday={
-										e === currentDate.getDate() &&
-										selectedMonth === new Date().getMonth() + 1 &&
-										selectedYear === new Date().getFullYear()
+										+e === currentDate.day &&
+										+selectedMonth === DateTime.now().month &&
+										+selectedYear === DateTime.now().year
 									}
 									onClick={clickDayHandler}
 									value={e}
