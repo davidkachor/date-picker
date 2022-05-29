@@ -1,11 +1,20 @@
-import React, { useState } from 'react'
+import React, {useState} from 'react'
 import Calendar from '../Calendar/Calendar'
 
 function CalendarInput() {
 	const [calendarIsOpen, setCalendarIsOpen] = useState(false)
 	const [enteredValue, setEnteredValue] = useState('')
+	const [isClosingAnimation, setIsClosingAnimation] = useState(false)
 
-	const clickHandler = () => setCalendarIsOpen(prev => !prev)
+	const clickHandler = () => {
+		if (calendarIsOpen) {
+			setIsClosingAnimation(true)
+			setTimeout(() => {
+				setCalendarIsOpen(false)
+				setIsClosingAnimation(false)
+			}, 200)
+		} else setCalendarIsOpen(true)
+	}
 	const selectHandler = value => setEnteredValue(value)
 
 	return (
@@ -30,7 +39,13 @@ function CalendarInput() {
 					</svg>
 				</button>
 			</label>
-			{calendarIsOpen && <Calendar onSelect={selectHandler} onClose={clickHandler} />}
+			{calendarIsOpen &&
+				<Calendar
+					className={isClosingAnimation ? '__disappear' : ''}
+					onSelect={selectHandler}
+					onClose={clickHandler}
+				/>
+			}
 		</React.Fragment>
 	)
 }

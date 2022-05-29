@@ -10,7 +10,7 @@ function Modal(props) {
 
 
 	return ReactDOM.createPortal(
-		<div onClick={clickHandler} className="modal">
+		<div onClick={clickHandler} className={"modal " + props.className}>
 			{props.children}
 		</div>,
 		document.getElementById('modal-root')

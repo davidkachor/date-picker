@@ -78,8 +78,8 @@ function Calendar(props) {
 	}, [])
 
 	return (
-		<Modal onClose={props.onClose}>
-			<div className="calendar">
+		<Modal className={props.className} onClose={props.onClose}>
+			<div className={'calendar ' + props.className}>
 				<div className="calendar_switch-data">
 					<Select
 						onChange={changeMonthHandler}
